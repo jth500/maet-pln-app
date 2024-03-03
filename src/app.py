@@ -28,25 +28,12 @@ def initialise_session_vars():
         st.session_state.model = "T5"
 
 
-def radio_callback():
-    logger.debug("radio_callback")
-    st.session_state.choice = st.session_state.choice_radio
-    pass
-
-
 def write_user_response(r) -> None:
     with st.chat_message("user"):
         st.write(r)
     st.session_state.messages.append({"role": "user", "content": r})
     logger.debug(f"Printing user input: {r}")
     pass
-
-
-def input_form():
-    with st.form("form"):
-        prompt = "Select a Reddit post from the dataset, or input your own below"
-        choice = st.radio(prompt, options=INPUTS, key="choice_radio", index=None)
-        submit = st.form_submit_button("Submit", on_click=radio_callback)
 
 
 def info_expander():
@@ -80,12 +67,37 @@ def sidebar():
             on_change=model_callback,
             key="model",
         )
+        st.write(f"Model chosen: {st.session_state.model}")
+        st.write(
+            f"Info about {st.session_state.model}, who built it, number of parameters, etc."
+        )
 
         pass
 
 
+def button_callback_0():
+    logger.debug("button_callback_1")
+    st.session_state.choice = INPUTS[0]
+
+
+def button_callback_1():
+    logger.debug("button_callback_2")
+    st.session_state.choice = INPUTS[1]
+
+
+def button_callback_2():
+    logger.debug("button_callback_3")
+    st.session_state.choice = INPUTS[2]
+
+
 def input_buttons():
-    # TODO
+    callbacks = [button_callback_0, button_callback_1, button_callback_2]
+    cols = st.columns([1, 1, 1])
+    st.write("Select a Reddit post from the dataset, or input your own below")
+    for i, col in enumerate(cols):
+        with col:
+            st.button(INPUTS[i], key=f"button_{i}", on_click=callbacks[i])
+
     pass
 
 
@@ -119,7 +131,7 @@ def main():
     sidebar()
     info_expander()
     chat_flow()
-    input_form()
+    input_buttons()
     pass
 
 
