@@ -75,28 +75,23 @@ def sidebar():
         pass
 
 
-def button_callback_0():
+def button_callback(input):
     logger.debug("button_callback_1")
-    st.session_state.choice = INPUTS[0]
-
-
-def button_callback_1():
-    logger.debug("button_callback_2")
-    st.session_state.choice = INPUTS[1]
-
-
-def button_callback_2():
-    logger.debug("button_callback_3")
-    st.session_state.choice = INPUTS[2]
+    st.session_state.choice = input
 
 
 def input_buttons():
-    callbacks = [button_callback_0, button_callback_1, button_callback_2]
+
     cols = st.columns([1, 1, 1])
     st.write("Select a Reddit post from the dataset, or input your own below")
     for i, col in enumerate(cols):
         with col:
-            st.button(INPUTS[i], key=f"button_{i}", on_click=callbacks[i])
+            st.button(
+                INPUTS[i],
+                key=f"button_{i}",
+                on_click=button_callback,
+                kwargs={"input": INPUTS[i]},
+            )
 
     pass
 
