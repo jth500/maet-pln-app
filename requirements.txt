@@ -1,0 +1,9 @@
+pip
+streamlit
+pandas
+numpy
+python-dotenv
+ipykernel
+pip
+streamlit_chat
+streamlit_pills
