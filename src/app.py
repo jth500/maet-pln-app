@@ -7,11 +7,10 @@ from streamlit_pills import pills
 
 from chat import chat
 from inputs import INPUTS
+from utils import setup_logger
 
 # Config
-logging.basicConfig()
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = setup_logger(__name__)
 cwd = Path(os.getcwd())
 
 logger.debug("Running from top")  # just useful to undserstand the order of execution
@@ -64,6 +63,7 @@ def info_expander():
 
 def model_callback():
     logger.debug(st.session_state.model)
+    st.session_state.choice = None
     pass
 
 
@@ -84,6 +84,11 @@ def sidebar():
         pass
 
 
+def input_buttons():
+    # TODO
+    pass
+
+
 def chat_flow():
     for m in st.session_state.messages:
         with st.chat_message(m["role"]):
@@ -94,21 +99,24 @@ def chat_flow():
         st.session_state.choice = user_input
         st.rerun()
 
-    else:
+    elif st.session_state.choice:
         # Write the user response if there is one
         logger.info(f"No input received: {st.session_state.choice}")
-        if st.session_state.choice:
-            write_user_response(st.session_state.choice)
-            pass
+        write_user_response(st.session_state.choice)
+        pass
 
-        response = chat(st.session_state.choice)
+        response = chat(input=st.session_state.choice, model=st.session_state.model)
         with st.chat_message("assistant"):
             st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
+    else:
+        logger.info("No input received and no choice")
 
 
 def main():
     st.title("maet-pln says hi")
+    initialise_session_vars()
+    sidebar()
     info_expander()
     chat_flow()
     input_form()
@@ -116,6 +124,4 @@ def main():
 
 
 if __name__ == "__main__":
-    initialise_session_vars()
-    sidebar()
     main()

@@ -1,15 +1,13 @@
 import os
-import logging
+from utils import setup_logger
 from pathlib import Path
 
+
 # Config
-logging.basicConfig()
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = setup_logger(__name__)
 cwd = Path(os.getcwd())
 
 
-def chat(*args, **kwargs):
+def chat(input, model, *args, **kwargs):
     logger.info("Chat function called")
-    if args:
-        return "This is a placeholder for the chat function."
+    return f"This is a placeholder for the chat function. Model chosen: {model}. Input: {input}"
