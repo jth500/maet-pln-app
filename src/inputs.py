@@ -3,3 +3,5 @@ INPUT_2 = """I'v been with my boyfriend for some time now and his mother has met
 INPUT_3 = """I (20f) have been with my boyfriend (20m) for 3 years. We have a great relationship and I love him very much. We have been living together for 2 years. I have a 3 year old daughter from a previous relationship. My boyfriend has been in her life since she was 6 months old. He is the only father she knows."""
 
 INPUTS = [input[: len(INPUT_1)] + "..." for input in [INPUT_1, INPUT_2, INPUT_3]]
+
+SIDEBAR_TEXT = """In our app, you can quickly summarize any text by choosing a powerful AI language model like GPT. Simply input your text, and the AI will analyze its key points and main ideas. It filters out the extras, keeping only the essentials, to create a clear and concise summary for you. Different language models offer unique strengths, so you can pick the one that best fits your needs. Enjoy instant, smart summaries with just a click!"""
