@@ -1,9 +1,6 @@
 import os
-import logging
 from pathlib import Path
 import streamlit as st
-from streamlit_chat import message
-from streamlit_pills import pills
 
 from chat import chat
 from inputs import INPUTS, SIDEBAR_TEXT
@@ -39,10 +36,12 @@ def write_user_response(r) -> None:
 def info_expander():
     with st.expander("Built by maet-pln for COMP0087"):
         st.write(
-            "This app was built as part of the assessment for COMP0087 (Statistical Natural Language Processing) at University College London 23/24."
+            "This app was built as part of the assessment for COMP0087 "
+            "(Statistical Natural Language Processing) at University College London 23/24."
         )
         st.write(
-            "Our team consists of Isaac, Toby, Lucia, Jack, Louise. We are a group of MSc students enrolled in 1) Computational Statistics and Machine Learning and 2) Data Science."
+            "Our team consists of Isaac, Toby, Lucia, Jack, Louise. We are a group "
+            "of MSc students enrolled in 1) Computational Statistics and Machine Learning and 2) Data Science."
         )
 
 
