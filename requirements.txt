@@ -7,3 +7,5 @@ ipykernel
 pip
 streamlit_chat
 streamlit_pills
+trl
+python-dotenv

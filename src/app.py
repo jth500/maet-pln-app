@@ -1,16 +1,17 @@
 import os
 from pathlib import Path
 import streamlit as st
+import pandas as pd
 
 from chat import chat
-from inputs import INPUTS, SIDEBAR_TEXT
+from inputs import SIDEBAR_TEXT
 from utils import setup_logger
 
 # Config
 logger = setup_logger(__name__)
 cwd = Path(os.getcwd())
-
 logger.debug("Running from top")  # just useful to undserstand the order of execution
+DATA = Path(__file__).parents[1] / "data"
 
 
 def initialise_session_vars():
@@ -23,6 +24,17 @@ def initialise_session_vars():
     if "model" not in st.session_state:
         logger.debug("Initialising model")
         st.session_state.model = "T5"
+
+
+@st.cache_data(show_spinner=True)
+def get_example_articles():
+    return pd.read_csv(DATA / "sample_articles.csv", index_col=0)
+
+
+def get_random_article(seed=None):
+    df = get_example_articles()
+    row = df.sample(n=1)
+    return row.iloc[0, 0]
 
 
 def write_user_response(r) -> None:
@@ -71,25 +83,15 @@ def sidebar():
         pass
 
 
-def button_callback(input):
-    logger.debug("button_callback_1")
-    st.session_state.choice = input
+def random_article_callback():
+    st.session_state.choice = get_random_article()
 
 
-def input_buttons():
-
-    cols = st.columns([1, 1, 1])
-    st.write("Select a Reddit post from the dataset, or input your own below")
-    for i, col in enumerate(cols):
-        with col:
-            st.button(
-                INPUTS[i],
-                key=f"button_{i}",
-                on_click=button_callback,
-                kwargs={"input": INPUTS[i]},
-            )
-
-    pass
+def random_article_button():
+    st.write(
+        "Select a random news article from the dataset, or input your own text below."
+    )
+    st.button("Select a random article", on_click=random_article_callback)
 
 
 def chat_flow():
@@ -122,7 +124,7 @@ def main():
     sidebar()
     info_expander()
     chat_flow()
-    input_buttons()
+    random_article_button()
     pass
 
 
