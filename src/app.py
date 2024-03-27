@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import streamlit as st
 import pandas as pd
@@ -55,7 +54,6 @@ def last_article_callback():
 
 
 def sidebar():
-    # TBD What should the radio do - presumably it should change
     with st.sidebar:
         st.title("Select a model")
         st.write(SIDEBAR_TEXT)
