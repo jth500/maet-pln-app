@@ -9,7 +9,6 @@ from utils import setup_logger
 
 # Config
 logger = setup_logger(__name__)
-cwd = Path(os.getcwd())
 logger.debug("Running from top")  # just useful to undserstand the order of execution
 DATA = Path(__file__).parents[1] / "data"
 

@@ -11,75 +11,40 @@ from dotenv import load_dotenv
 
 # Config
 logger = setup_logger(__name__)
-cwd = Path(os.getcwd())
 load_dotenv()
-
-
-@st.cache_resource
-def get_model():
-    tokenizer = AutoTokenizer.from_pretrained("gpt2-medium")
-    model = AutoModelForCausalLMWithValueHead.from_pretrained(
-        "ijwatson98/sft-gpt2-xsum-1503"
-    )
-    # tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    # model = BertForSequenceClassification.from_pretrained("pnichite/YTFineTuneBert")
-    return tokenizer, model
 
 
 def generate_t5_prompt(input):
     return f"summarize: {input}"
 
 
-def generate_prompt(input, output=""):
+def generate_gpt_prompt(input):
     return f"""You are an expert in text summarization. You are given the full text. Your job is to summarise the text as concisely and accurately as possible.
 
     ### Input:
-    {input}
-
-    ### Response:
-    {output}"""
+    {input}"""
 
 
-def tokenize(prompt, tokenizer):
-    result = tokenizer(
-        prompt,
-        # truncation=True,
-        # max_length=512,
-        # padding=False,
-        # return_tensors=None,
+@st.cache_resource(
+    show_spinner="Loading the GPT-2 model. Don't worry, this only happens the first time you run GPT2!"
+)
+def get_gpt_summarizer():
+    return pipeline(
+        "text-generation",
+        model="ijwatson98/sft-gpt2-xsum-2503",
+        tokenizer="gpt2-medium",
     )
-    result["labels"] = result["input_ids"].copy()
-    return result
 
 
-def generate_and_tokenize_prompt(data_point, tokenizer):
-    full_prompt = generate_prompt(
-        data_point,
-    )
-    tokenized_full_prompt = tokenize(full_prompt, tokenizer)
-    return tokenized_full_prompt
-
-
-def do_it(model, prompt_tensor, tokenizer):
-    output_min_length = 100
-    output_max_length = 400
-    output_length_sampler = LengthSampler(output_min_length, output_max_length)
-
-    generation_kwargs = {
-        "temperature": 0.5,
-        "min_length": 5,
-        "top_k": 0.0,
-        "top_p": 1.0,
-        "do_sample": True,
-    }
-
-    # prompt_tensor = val_data[0]['input_ids']
-    # prompt_tensor = torch.tensor(prompt_tensor).unsqueeze(dim=0).to(device)
-    max_new_tokens = output_length_sampler()
-    generation_kwargs["max_new_tokens"] = max_new_tokens
-    summary_tensor = model.generate(input_ids=prompt_tensor, **generation_kwargs)
-    summary = tokenizer.decode(summary_tensor[0], skip_special_tokens=True)
-    return summary
+@st.cache_resource(show_spinner="Summarising with GPT2...")
+def get_gpt_response(input):
+    summarizer = get_gpt_summarizer()
+    prompt = generate_gpt_prompt(input)
+    response = summarizer(prompt, truncation=True, max_length=10000)
+    logger.info(response)
+    response = response[0]["generated_text"]
+    i = response.index("SUMMARY:") + len("SUMMARY:\n")
+    return response[i:]
 
 
 @st.cache_resource(
@@ -100,12 +65,7 @@ def get_t5_response(input):
 def chat(input, model, *args, **kwargs):
     logger.info("Chat function called")
     if model == "GPT":
-        # model, tokenizer = get_model()
-        # prompt_tensor = generate_and_tokenize_prompt(input, tokenizer)["input_ids"]
-        # response = do_it(model, prompt_tensor, tokenizer)
-        # r_ind = response.index("Response:\n") + len("Response:\n")
-        # return response[r_ind:]
-        pass
+        return get_gpt_response(input)
     elif model == "T5":
         return get_t5_response(input)
 
