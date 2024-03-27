@@ -40,9 +40,7 @@ def get_gpt_summarizer():
 def get_gpt_response(input):
     summarizer = get_gpt_summarizer()
     prompt = generate_gpt_prompt(input)
-    logger.info(prompt)
     response = summarizer(prompt, truncation=True, max_length=10000)
-    logger.info(response)
     response = response[0]["generated_text"]
     i = response.index("SUMMARY:") + len("SUMMARY:\n")
     return response[i:]
@@ -71,7 +69,8 @@ def chat(input, model, *args, **kwargs):
     logger.info("Chat function called")
     response_funcs = {"GPT": get_gpt_response, "T5": get_t5_response}
     try:
-        return response_funcs.get(model, default_response)(input)
+        get_response = response_funcs.get(model, default_response)
+        return get_response(input)
     except (IndexError, ValueError) as e:
         logger.exception(e)
         return "Oops! Something went wrong. Try again."

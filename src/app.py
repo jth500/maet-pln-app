@@ -20,6 +20,8 @@ def initialise_session_vars():
     if "choice" not in st.session_state:
         logger.debug("Initialising choice")
         st.session_state.choice = None
+    if "choice_last" not in st.session_state:
+        st.session_state.choice_last = None
     if "model" not in st.session_state:
         logger.debug("Initialising model")
         st.session_state.model = "T5"
@@ -36,30 +38,20 @@ def get_random_article(seed=None):
     return row.iloc[0, 0]
 
 
-def write_user_response(r) -> None:
-    with st.chat_message("user"):
-        st.write(r)
-    st.session_state.messages.append({"role": "user", "content": r})
-    logger.debug(f"Printing user input: {r}")
-    pass
-
-
-def info_expander():
-    with st.expander("Built by maet-pln for COMP0087"):
-        st.write(
-            "This app was built as part of the assessment for COMP0087 "
-            "(Statistical Natural Language Processing) at University College London 23/24."
-        )
-        st.write(
-            "Our team consists of Isaac, Toby, Lucia, Jack, Louise. We are a group "
-            "of MSc students enrolled in 1) Computational Statistics and Machine Learning and 2) Data Science."
-        )
-
-
 def model_callback():
     logger.debug(st.session_state.model)
     st.session_state.choice = None
     pass
+
+
+def random_article_callback():
+    article = get_random_article()
+    st.session_state.choice = article
+    st.session_state.choice_last = article
+
+
+def last_article_callback():
+    st.session_state.choice = st.session_state.choice_last
 
 
 def sidebar():
@@ -82,15 +74,35 @@ def sidebar():
         pass
 
 
-def random_article_callback():
-    st.session_state.choice = get_random_article()
+def info_expander():
+    with st.expander("Built by maet-pln for COMP0087"):
+        st.write(
+            "This app was built as part of the assessment for COMP0087 "
+            "(Statistical Natural Language Processing) at University College London 23/24."
+        )
+        st.write(
+            "Our team consists of Isaac, Toby, Lucia, Jack, Louise. We are a group "
+            "of MSc students enrolled in 1) Computational Statistics and Machine Learning and 2) Data Science."
+        )
 
 
-def random_article_button():
+def article_selection_buttons():
+    cols = st.columns([1, 1])
     st.write(
         "Select a random news article from the dataset, or input your own text below."
     )
-    st.button("Select a random article", on_click=random_article_callback)
+    with cols[0]:
+        st.button("Select a random article.", on_click=random_article_callback)
+    with cols[1]:
+        st.button("Re-run using the last article.", on_click=last_article_callback)
+
+
+def write_user_response(r) -> None:
+    with st.chat_message("user"):
+        st.write(r)
+    st.session_state.messages.append({"role": "user", "content": r})
+    logger.debug(f"Printing user input: {r}")
+    pass
 
 
 def chat_flow():
@@ -101,6 +113,7 @@ def chat_flow():
     if user_input := st.chat_input("Write your message here"):
         logger.info(f"User input received: {user_input}")
         st.session_state.choice = user_input
+        st.session_state.choice_last = user_input
         st.rerun()
 
     elif st.session_state.choice:
@@ -123,7 +136,7 @@ def main():
     sidebar()
     info_expander()
     chat_flow()
-    random_article_button()
+    article_selection_buttons()
     pass
 
 
