@@ -25,6 +25,7 @@ def generate_gpt_prompt(input):
     ttl=24 * 3600,
 )
 def get_gpt_summarizer():
+    get_t5_summarizer.clear()
     return pipeline(
         "text-generation",
         model="ijwatson98/sft-gpt2-xsum-2503",
@@ -48,6 +49,7 @@ def get_gpt_response(input):
     ttl=24 * 3600,
 )
 def get_t5_summarizer():
+    get_gpt_summarizer.clear()
     return pipeline("summarization", model="jth500/t5-base-v3.1", tokenizer="t5-base")
 
 
