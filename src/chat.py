@@ -21,7 +21,7 @@ def generate_gpt_prompt(input):
 
 
 @st.cache_resource(
-    show_spinner="Loading the GPT-2 model. Don't worry, this only happens the first time you run GPT2!",
+    show_spinner="Loading the GPT-2 model. This only happens when you switch between models!",
     ttl=24 * 3600,
 )
 def get_gpt_summarizer():
@@ -32,8 +32,9 @@ def get_gpt_summarizer():
     )
 
 
-@st.cache_resource(show_spinner="Summarising with GPT2...", max_entries=4)
+@st.cache_resource(show_spinner="Summarising with GPT2...")
 def get_gpt_response(input):
+    get_t5_summarizer.clear()  # clear other model from the cache
     summarizer = get_gpt_summarizer()
     prompt = generate_gpt_prompt(input)
     response = summarizer(prompt, truncation=True, max_length=10000)
@@ -43,15 +44,16 @@ def get_gpt_response(input):
 
 
 @st.cache_resource(
-    show_spinner="Loading the T5 model. Don't worry, this only happens the first time you run T5!",
+    show_spinner="Loading the T5 model. This only happens when you switch between models!",
     ttl=24 * 3600,
 )
 def get_t5_summarizer():
     return pipeline("summarization", model="jth500/t5-base-v3.1", tokenizer="t5-base")
 
 
-@st.cache_resource(show_spinner="Summarising with T5...", max_entries=4)
+@st.cache_resource(show_spinner="Summarising with T5...")
 def get_t5_response(input):
+    get_gpt_summarizer.clear()  # clear other model from the cache
     summarizer = get_t5_summarizer()
     prompt = generate_t5_prompt(input)
     response = summarizer(prompt)[0]["summary_text"]
