@@ -33,7 +33,7 @@ def get_gpt_summarizer():
     )
 
 
-@st.cache_resource(show_spinner="Summarising with GPT2...")
+@st.cache_data(show_spinner="Summarising with GPT2...")
 def get_gpt_response(input):
     get_t5_summarizer.clear()  # clear other model from the cache
     summarizer = get_gpt_summarizer()
@@ -53,7 +53,7 @@ def get_t5_summarizer():
     return pipeline("summarization", model="jth500/t5-base-v3.1", tokenizer="t5-base")
 
 
-@st.cache_resource(show_spinner="Summarising with T5...")
+@st.cache_data(show_spinner="Summarising with T5...")
 def get_t5_response(input):
     get_gpt_summarizer.clear()  # clear other model from the cache
     summarizer = get_t5_summarizer()
