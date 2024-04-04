@@ -35,7 +35,7 @@ def get_gpt_summarizer():
 
 @st.cache_data(show_spinner="Summarising with GPT2...")
 def get_gpt_response(input):
-    get_t5_summarizer.clear()  # clear other model from the cache
+    get_t5_summarizer.clear()  # clear other model from the cache (can't hold > 1)
     summarizer = get_gpt_summarizer()
     prompt = generate_gpt_prompt(input)
     response = summarizer(prompt, truncation=True, max_length=10000)
@@ -55,7 +55,7 @@ def get_t5_summarizer():
 
 @st.cache_data(show_spinner="Summarising with T5...")
 def get_t5_response(input):
-    get_gpt_summarizer.clear()  # clear other model from the cache
+    get_gpt_summarizer.clear()  # clear other model from the cache (can't hold > 1)
     summarizer = get_t5_summarizer()
     prompt = generate_t5_prompt(input)
     response = summarizer(prompt)[0]["summary_text"]

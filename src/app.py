@@ -10,6 +10,9 @@ from utils import setup_logger
 logger = setup_logger(__name__)
 logger.debug("Running from top")  # just useful to undserstand the order of execution
 DATA = Path(__file__).parents[1] / "data"
+st.set_page_config(
+    page_title="maet pln",
+)
 
 
 def initialise_session_vars():
