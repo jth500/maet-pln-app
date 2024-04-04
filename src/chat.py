@@ -3,75 +3,38 @@ import streamlit as st
 from transformers import pipeline
 from dotenv import load_dotenv
 
-
 # Config
-logger = setup_logger(__name__)
 load_dotenv()
-
-
-def generate_t5_prompt(input):
-    return f"summarize: {input}"
-
-
-def generate_gpt_prompt(input):
-    return f"""You are an expert in text summarization. You are given the full text. Your job is to summarise the text as concisely and accurately as possible.
-
-    ### Input:
-    {input}"""
+logger = setup_logger(__name__)
+GPT_PROMPT_TEMPLATE = """{input} TL;DR: """
 
 
 @st.cache_resource(
-    show_spinner="Loading the GPT-2 model. This only happens when you switch between models!",
+    show_spinner="Loading the model trained with RLAIF. This only happens the first time!",
     ttl=24 * 3600,
 )
 def get_gpt_summarizer():
-    get_t5_summarizer.clear()
     return pipeline(
         "text-generation",
-        model="ijwatson98/sft-gpt2-xsum-2503",
+        model="ijwatson98/sft-gpt2-xsum-2703-tldr",
         tokenizer="gpt2-medium",
     )
 
 
 @st.cache_data(show_spinner="Summarising with GPT2...")
 def get_gpt_response(input):
-    get_t5_summarizer.clear()  # clear other model from the cache (can't hold > 1)
     summarizer = get_gpt_summarizer()
-    prompt = generate_gpt_prompt(input)
+    prompt = GPT_PROMPT_TEMPLATE.format(input=input)
     response = summarizer(prompt, truncation=True, max_length=10000)
     response = response[0]["generated_text"]
-    i = response.index("SUMMARY:") + len("SUMMARY:\n")
+    i = response.index("TL;DR: ") + len("TL;DR: ")
     return response[i:]
 
 
-@st.cache_resource(
-    show_spinner="Loading the T5 model. This only happens when you switch between models!",
-    ttl=24 * 3600,
-)
-def get_t5_summarizer():
-    get_gpt_summarizer.clear()
-    return pipeline("summarization", model="jth500/t5-base-v3.1", tokenizer="t5-base")
-
-
-@st.cache_data(show_spinner="Summarising with T5...")
-def get_t5_response(input):
-    get_gpt_summarizer.clear()  # clear other model from the cache (can't hold > 1)
-    summarizer = get_t5_summarizer()
-    prompt = generate_t5_prompt(input)
-    response = summarizer(prompt)[0]["summary_text"]
-    return response
-
-
-def default_response(input):
-    return f"This is a placeholder for the chat function. Input: {input}"
-
-
-def chat(input, model, *args, **kwargs):
+def chat(input):
     logger.info("Chat function called")
-    response_funcs = {"GPT": get_gpt_response, "T5": get_t5_response}
     try:
-        get_response = response_funcs.get(model, default_response)
-        return get_response(input)
+        return get_gpt_response(input)
     except (IndexError, ValueError) as e:
         logger.exception(e)
         return "Oops! Something went wrong. Try again."
