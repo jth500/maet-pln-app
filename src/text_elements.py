@@ -15,18 +15,19 @@ def sidebar():
             """GPT-2 Medium and T5-base."""
         )
         st.write(
-            """Supervised fine-tuning for summarization adjusts a pre-trained model using a """
+            """**Supervised Fine Tuning** for summarization adjusts a pre-trained model using a """
             """dataset of text-summary pairs to improve summary generation. This method refines """
             """the model’s understanding of summarization tasks, enhancing its ability to produce """
             """concise and accurate summaries for specific domains."""
         )
         st.write(
-            """Reinforcement Learning (RL) is an area of machine learning where an """
+            """**Reinforcement Learning** is an area of machine learning where an """
             """agent learns to make decisions by performing actions in an environment """
             """to achieve some goal. The agent receives feedback through rewards or """
             """penalties based on the outcomes of its actions. In RLAIF, human feedback is replaced with """
             """feedback from another agent."""
         )
+        st.write("Read the full report here **soon**.")
 
 
 def info_expander():

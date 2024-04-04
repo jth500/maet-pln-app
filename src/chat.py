@@ -10,7 +10,7 @@ GPT_PROMPT_TEMPLATE = """{input} TL;DR: """
 
 
 @st.cache_resource(
-    show_spinner="Loading the model trained with RLAIF. This only happens the first time!",
+    show_spinner="Loading the model. Don't worry, this only happens the first time!",
     ttl=24 * 3600,
 )
 def get_gpt_summarizer():
