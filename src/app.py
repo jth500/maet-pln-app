@@ -147,7 +147,7 @@ def main():
     sidebar()
     info_expander()
 
-    user_input = st.chat_input("Write your message here")
+    user_input = st.chat_input("Copy an article here")
     tab1, tab2 = st.tabs(
         ["🤖 Reinforcement Learning with AI Feedback", ":chart: Supervised Fine Tuning"]
     )
