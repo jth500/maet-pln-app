@@ -37,7 +37,7 @@ def info_expander():
             "(Statistical Natural Language Processing) at University College London 23/24."
         )
         st.write(
-            "Our team consists of [Isaac](https://github.com/ijwatson98), [Toby](https://github.com/jth500), [Lucia](https://github.com/guillametlucia), Jack, Louise. We are a group "
+            "Our team consists of [Isaac](https://github.com/ijwatson98), [Toby](https://github.com/jth500), [Lucia](https://github.com/guillametlucia), [Jack](https://www.linkedin.com/in/jackwardleprofile?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app), [Louise](https://www.linkedin.com/in/louise-sandland-b2600b207/). We are a group "
             "of MSc students enrolled in 1) Computational Statistics and Machine Learning and 2) Data Science."
         )
         st.write(
