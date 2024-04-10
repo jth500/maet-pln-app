@@ -11,7 +11,7 @@ GPT_PROMPT_TEMPLATE = """{input} TL;DR: """
 
 @st.cache_resource(
     show_spinner="Loading the model. Don't worry, this only happens the first time!",
-    ttl=1800,
+    ttl=600,
 )
 def get_gpt_summarizer():
     return pipeline(
